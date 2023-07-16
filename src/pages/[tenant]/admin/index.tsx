@@ -16,7 +16,7 @@ interface Props {
 export default function AdminDashBoard(props: Props) {
     const router = useRouter()
     const { tenant, products, categories } = props
-    const [productEditing, setProductEditing] = useState<Product>({ id: '', name: '', category: categories[0].name, img: '', price: '', slug: tenant.slug, description: '' })
+    const [productEditing, setProductEditing] = useState<Product>({ id: '', name: ' ', category: categories[0]?.name, img: '', price: '', slug: tenant.slug, description: '' })
     const [categoryEditing, setCategoryEditing] = useState({ name: '', slug: tenant.slug, id: '' })
     const [showProductModel, setShowProductModel] = useState(false)
     const [isNewProduct, setIsNewProduct] = useState(false)

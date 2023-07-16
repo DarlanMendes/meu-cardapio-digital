@@ -1,7 +1,8 @@
 import { Tenant } from "@/types/types"
 import axios from "axios"
 import { GetServerSideProps } from "next"
-import { signIn } from "next-auth/react"
+import { getSession, signIn } from "next-auth/react"
+import { ContextType } from "react"
 
 interface Props{
     tenant:Tenant
@@ -25,16 +26,26 @@ export default function Login(props:Props){
         </div>
     )
 }
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context:any) {
 
     const { tenant } = context.query
     const { host } = context.req.headers
     const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
-  
-
-    return {
-        props: {
-            tenant: tenantFound.data
+    const session = await getSession(context)
+    if (session) {
+        if (session.user?.email === tenantFound.data.email) {
+            return {
+                redirect: {
+                    destination: `/${tenant}/admin`,
+                }
+            }
+        }
+    } else {
+        return {
+            props: {
+                tenant: tenantFound.data
+            }
         }
     }
+
 }
