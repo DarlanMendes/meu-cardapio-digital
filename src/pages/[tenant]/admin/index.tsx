@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { Product, Category, Tenant } from "@/types/types";
 import CategoryAdminModal from "@/components/CategoryAdminModal";
+import ProductCardAdmin from "@/components/ProductCardAdmin/ProductCardAdmin";
 
 interface Props {
     tenant: Tenant
@@ -19,7 +20,7 @@ export default function AdminDashBoard(props: Props) {
     const [productEditing, setProductEditing] = useState<Product>({ id: '', name: ' ', category: categories[0]?.name, img: '', price: '', slug: tenant.slug, description: '' })
     const [categoryEditing, setCategoryEditing] = useState({ name: '', slug: tenant.slug, id: '' })
     const [showProductModel, setShowProductModel] = useState(false)
-    const [isNewProduct, setIsNewProduct] = useState(false)
+   
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
     async function handleDeleteProduct(id: string) {
         let confirmed = confirm("Deseja realmente excluir esse produto?")
@@ -34,7 +35,7 @@ export default function AdminDashBoard(props: Props) {
 
     return (
         <>
-            <ProductAdminModel product={productEditing!} setProduct={setProductEditing} showProductModel={showProductModel} setShowProductModel={setShowProductModel} categories={categories} isNewProduct={isNewProduct} setIsNewProduct={setIsNewProduct} />
+            <ProductAdminModel product={productEditing!} setProduct={setProductEditing} showProductModel={showProductModel} setShowProductModel={setShowProductModel} categories={categories} />
             <CategoryAdminModal category={categoryEditing} isCategoryModalOpen={isCategoryModalOpen} setIsCategoryModalOpen={setIsCategoryModalOpen} setCategory={setCategoryEditing} tenant={tenant.slug} />
             <HeaderTenant tenant={tenant} />
             <div className={`px-4`}>
@@ -63,14 +64,14 @@ export default function AdminDashBoard(props: Props) {
                     <hr className="w-full" />
                     <button className={`px-3 py-1 rounded-lg w-96`}
                         style={{ backgroundColor: tenant.mainColor, color: "white" }}
-                        onClick={() => { setShowProductModel(true); setIsNewProduct(true) }}
+                        onClick={() => {  setShowProductModel(true); }}
                     > Criar produto</button>
                 </div>
 
                 {products?.map((product, index) => (
-                    <div key={index} className="flex p-2 gap-2 border-2 mt-2">
-
-                        <img src={product.img} alt={product.name} className="w-5/12" />
+                    <div key={index} className="mb-2">
+                        <ProductCardAdmin product={product} setProductEditing={setProductEditing} setShowProductModel={setShowProductModel} slug={tenant.slug}/>
+                        {/* <img src={product.img} alt={product.name} className="w-5/12" />
                         <div className="p-2">
                             <h1 className="font-semibold">{product.name}</h1>
                             <div className="flex gap-2 justify-center items-center mt-2">
@@ -81,7 +82,7 @@ export default function AdminDashBoard(props: Props) {
                                     onClick={async () => { await handleDeleteProduct(product.id) }}
                                 >Apagar</button>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
                 ))}
 
