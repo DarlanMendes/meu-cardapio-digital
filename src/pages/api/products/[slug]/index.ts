@@ -33,7 +33,7 @@ export default async function handler(
   
       return res.json({msg:`produto criado com sucesso ${productRef.id}`});
     }catch(e){
-      throw new Error(`Erro ao criar produto`);
+      console.log(`Erro ao criar produto ${e}`);
     }
   
   }

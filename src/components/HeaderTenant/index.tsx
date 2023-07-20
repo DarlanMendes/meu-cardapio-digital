@@ -1,6 +1,8 @@
+import { signOut } from 'next-auth/react'
 import Link from 'next/link'
 import { IconContext } from 'react-icons'
 import { BsInstagram, BsFacebook, BsWhatsapp } from 'react-icons/bs'
+import{RiLogoutBoxRLine} from 'react-icons/ri'
 
 
 interface Tenant{
@@ -18,6 +20,14 @@ interface Props{
     tenant?:Tenant|null;
 }
 export default function HeaderTenant(props:Props) {
+    async function handleLogOut(){
+        try{
+            await signOut()
+            alert('Usuario deslogado com sucesso')
+        }catch(e){
+            console.error("Erro ao fazer logout:", e)
+        }
+    }
     return (
         <div className="">
             <img src={props.tenant!.banner} alt=""
@@ -39,7 +49,8 @@ export default function HeaderTenant(props:Props) {
                             </Link>
                             <Link href={props.tenant!.whatsapp}>
                             <BsWhatsapp />
-                            </Link>
+                            </Link> 
+                            <RiLogoutBoxRLine onClick={async()=>await handleLogOut()}/>
                         </IconContext.Provider>
                     </div>
 

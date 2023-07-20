@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Product, Category, Tenant } from "@/types/types";
 import CategoryAdminModal from "@/components/CategoryAdminModal";
 import ProductCardAdmin from "@/components/ProductCardAdmin/ProductCardAdmin";
+import { getSession } from "next-auth/react";
 
 interface Props {
     tenant: Tenant
@@ -100,7 +101,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
     const productsFound = await axios(`http://${host}/api/products/${tenant}`)
     const categoriesFound = await axios(`http://${host}/api/categories/${tenant}`)
-
+    const session = await getSession(context);
+   // console.log(session.user.email === tenantFound.data.email)
     return {
         props: {
             tenant: tenantFound.data,
