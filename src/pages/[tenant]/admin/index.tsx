@@ -94,20 +94,26 @@ export default function AdminDashBoard(props: Props) {
 
 
 }
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps(context:any) {
 
-    const { tenant } = context.query
-    const { host } = context.req.headers
-    const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
-    const productsFound = await axios(`http://${host}/api/products/${tenant}`)
-    const categoriesFound = await axios(`http://${host}/api/categories/${tenant}`)
+    const { tenant } = context.query;
+    const { host } = context.req.headers;
+    const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`);
+    const productsFound = await axios(`http://${host}/api/products/${tenant}`);
+    const categoriesFound = await axios(`http://${host}/api/categories/${tenant}`);
     const session = await getSession(context);
-   // console.log(session.user.email === tenantFound.data.email)
+    if (session?.user?.email === tenantFound.data.email) {
+        return {
+            redirect: {
+                destination: `/${tenant}/login`
+            }
+        };
+    }
     return {
         props: {
             tenant: tenantFound.data,
             products: productsFound.data,
             categories: categoriesFound.data
         }
-    }
+    };
 }

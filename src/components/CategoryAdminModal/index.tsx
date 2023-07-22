@@ -15,9 +15,14 @@ export default function CategoryAdminModal(props: Props) {
     async function handleCreateCategory(){
         console.log(props.category)
         if(props.category.name){
-            const productEdited = await axios.post(`/api/categories/${props.tenant}/`,{category: props.category})
-            alert('Categoria criada com sucesso')
-            router.reload()
+            try{
+                const categoryCreated = await axios.post(`/api/categories/${props.tenant}/`,{category: props.category})
+                alert('Categoria criada com sucesso')
+                router.reload()
+            }catch(e){
+                alert(`Ocorreu um erro:${e}`)
+            }
+            
         }else{
             alert('Preencha o nome da categoria')
         }
@@ -25,8 +30,8 @@ export default function CategoryAdminModal(props: Props) {
     }
     async function handleUpdateCategory(){
         if(props.category.name){
-            const productEdited = await axios.post(`/api/categories/${props.tenant}/${props.category.id}`,{category: props.category})
-            alert('Categoria criada com sucesso')
+            const categoryEdited = await axios.post(`/api/categories/${props.tenant}/${props.category.id}`,{category: props.category})
+            alert('Categoria atualizada com sucesso')
             router.reload()
         }else{
             alert('Preencha o nome da categoria')
@@ -50,7 +55,7 @@ export default function CategoryAdminModal(props: Props) {
                     > Cancelar</button>
                     <button className="bg-green-500 text-white py-1 px-5 rounded-lg "
                         onClick={async() => {
-                            {props.category?
+                            {props.category.id.length>0?
                             await handleUpdateCategory() :
                             await handleCreateCategory()
                             }
