@@ -1,23 +1,19 @@
+import { app } from "@/firebase"
 import { Tenant } from "@/types/types"
 import axios from "axios"
 
-import { getSession, signIn} from "next-auth/react"
+import { getAuth, signInWithCustomToken } from 'firebase/auth'
 
-// import { app } from "@/firebase";
-// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-// import { getCookie, setCookie } from "cookies-next";
+import {getSession, signIn, useSession} from "next-auth/react"
+import { useEffect } from "react"
+const auth = getAuth(app)
+
 interface Props {
     tenant: Tenant
 }
 export default function Login(props: Props) {
-    // async function handleLogin() {
-    //     const auth = getAuth(app);
-    //     const provider = new GoogleAuthProvider();
-    //     signInWithPopup(auth, provider).then((result)=>{
-    //         //@ts-ignore
-    //         setCookie('id',result.user.accessToken)
-    //     })
-    // }
+
+
     return (
         <div className="flex w-screen flex-col  justify-center items-center bg-slate-500 h-screen">
             <div className="w-10/12 p-4 flex flex-col items-center bg-slate-400 justify-center rounded-3xl mt-[-20vh]">
@@ -43,21 +39,36 @@ export async function getServerSideProps(context: any) {
     const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
     const session = await getSession(context)
     console.log(session)
- 
-
-    if (session?.user?.email !== tenantFound.data.email) {
-        return {
-            redirect: {
-                destination: `/${tenant}/admin`,
-            }
-        }
-    } else {
-        return {
-            props: {
-                tenant: tenantFound.data
+    await syncFirebaseAuth(session)
+    if(session)
+    if(session){
+        if(session.user?.email===tenantFound.data.email){
+            return{
+                redirect:{
+                    destination:`/${tenant}/admin`
+                }
             }
         }
     }
-
+    return{
+        props:{
+            tenant:tenantFound.data
+        }
+    }
+    
 
 }
+//Necessário criar um customToken para conseguir permissao de gravação usando adapter
+async function syncFirebaseAuth(session:any) {
+    if (session && session.firebaseToken) {
+      try {
+        await signInWithCustomToken(auth, session.firebaseToken)
+      } catch (error) {
+        console.error('Error signing in with custom token:', error)
+      }
+    } else {
+      auth.signOut()
+    }
+  }
+
+        

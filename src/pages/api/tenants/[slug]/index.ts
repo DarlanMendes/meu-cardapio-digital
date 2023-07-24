@@ -26,6 +26,9 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   async function getTenants(slug: string) {
+
+
+
     const q = query(collection(db, 'tenant'), where('slug', '==', slug));
 
     const querySnapshot = await getDocs(q);
@@ -33,12 +36,12 @@ export default async function handler(
     querySnapshot.forEach((doc) => {
       tenants = (doc.data() as Tenant);
     });
-
+    
     res.status(200).json( tenants!);
   }
 
   if (req.method === 'GET') {
-    console.log(req.query);
+    
     let tenantName = String(req.query?.slug || '');
     await getTenants(tenantName);
   }

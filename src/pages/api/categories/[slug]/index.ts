@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getFirestore, collection, query, where, getDocs, setDoc, addDoc} from 'firebase/firestore/lite';
 import { app } from '../../../../firebase';
 import { Category } from '@/types/types';
-
+import { authMiddleware } from '../../../../../middleware/auth';
 const db = getFirestore(app);
 
 
@@ -29,11 +29,13 @@ export default async function handler(
   }
 
   if (req.method === 'GET') {
-    console.log(req.query);
+
+   
     let tenantName = String(req.query?.slug || '');
     await getTenants(tenantName);
   }
   if(req.method === 'POST'){
+    authMiddleware(req)
     let{name, slug}  = req.body.category
       const categoryRef = collection(db, 'category')
       try{
