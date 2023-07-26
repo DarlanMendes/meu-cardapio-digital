@@ -26,8 +26,8 @@ export default function Login(){
 }
 export async function getServerSideProps(context: any) {
     const session = await getSession(context)
-   // await syncFirebaseAuth(session)
-
+    try{
+        await syncFirebaseAuth(session)
         if (session?.user?.email === 'dedsondarlan@gmail.com') {
             return {
                 redirect: {
@@ -41,20 +41,26 @@ export async function getServerSideProps(context: any) {
                 }
             }
         }
+    }catch(e){
+        console.log(e)
+    }
+    
+
+        
     
     
 
 
 }
 //Necessário criar um customToken para conseguir permissao de gravação usando adapter
-// async function syncFirebaseAuth(session: any) {
-//     if (session && session.firebaseToken) {
-//         try {
-//             await signInWithCustomToken(auth, session.firebaseToken)
-//         } catch (error) {
-//             console.error('Error signing in with custom token:', error)
-//         }
-//     } else {
-//         auth.signOut()
-//     }
-// }
+async function syncFirebaseAuth(session: any) {
+    if (session && session.firebaseToken) {
+        try {
+            await signInWithCustomToken(auth, session.firebaseToken)
+        } catch (error) {
+            console.error('Error signing in with custom token:', error)
+        }
+    } else {
+        auth.signOut()
+    }
+}
