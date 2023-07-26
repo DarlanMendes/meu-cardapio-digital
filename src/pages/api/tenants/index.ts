@@ -28,7 +28,7 @@ export default async function handler(
       const tenants: any[] = [];
   
       tenantSnapshot.forEach((doc) => {
-        tenants.push({ id: doc.id, data: doc.data() });
+        tenants.push({ id: doc.id, ... doc.data() });
       });
   
       return res.json(tenants as any); // Adiciona o 'return' aqui

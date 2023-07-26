@@ -12,6 +12,7 @@ interface Props {
   tenants: Array<Tenant>
 }
 export default function Home(props: Props) {
+  console.log(props.tenants)
   return (
     <main
       className={` ${playFairDisplay.className} `}
