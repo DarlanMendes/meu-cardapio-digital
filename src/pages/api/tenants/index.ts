@@ -21,7 +21,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  async function getTenants(db:any) {
+  if(req.method === 'GET'){
+     
     const tenantsCol = collection(db, 'tenant');
     const tenantSnapshot = await getDocs(tenantsCol);
     const tenants:any= []
@@ -34,11 +35,6 @@ export default async function handler(
     }catch(e){
       res.send({msg:`Erro ${e}`})
     }
-   
-  }
-  if(req.method === 'GET'){
-     await  getTenants(db)
-      
   }
   if(req.method === 'POST'){
     const TenantCollectionRef = collection(db, 'tenant');
