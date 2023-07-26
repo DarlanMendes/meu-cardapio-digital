@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import { Inter, Playfair_Display } from 'next/font/google'
+
+import {  Playfair_Display } from 'next/font/google'
 import axios from 'axios';
 import { getSession } from 'next-auth/react';
 import { Tenant } from '@/types/types';
