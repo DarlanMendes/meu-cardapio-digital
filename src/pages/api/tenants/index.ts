@@ -25,11 +25,16 @@ export default async function handler(
     const tenantsCol = collection(db, 'tenant');
     const tenantSnapshot = await getDocs(tenantsCol);
     const tenants:any= []
-    const tenantList = tenantSnapshot.docs.map(doc =>{
-      tenants.push({...doc.data(), id:doc.id})
-    } 
-      );
-    res.status(200).json(tenants)
+    try{
+      const tenantList = tenantSnapshot.docs.map(doc =>{
+        tenants.push({...doc.data(), id:doc.id})
+      } 
+        );
+      res.status(200).json(tenants)
+    }catch(e){
+      res.send({msg:`Erro ${e}`})
+    }
+   
   }
   if(req.method === 'GET'){
      await  getTenants(db)
