@@ -39,9 +39,10 @@ export async function getServerSideProps(context: any) {
 
 
   const { host } = context.req.headers;
-  //const tenantsFound = await axios(`http://${host}/api/tenants/`);
-  const tenantsFound = await axios(`https://${host}/api/tenants/`);
+  
   console.log(host)
+  const tenantsFound = await axios(`http://${host}/api/tenants/`);
+  
   const session = await getSession(context);
 
 
