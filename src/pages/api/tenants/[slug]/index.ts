@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, query, where, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore/lite';
 import { app } from '../../../../firebase';
 
 const db = getFirestore(app);
@@ -18,7 +18,8 @@ type Tenant = {
 };
 
 type Data = {
-  tenant: Array<Tenant>;
+  tenant?: Array<Tenant>;
+  msg?:string
 };
 
 export default async function handler(
@@ -36,7 +37,7 @@ export default async function handler(
     querySnapshot.forEach((doc) => {
       tenants = (doc.data() as Tenant);
     });
-    
+    console.log(tenants)
     res.status(200).json( tenants!);
   }
 
@@ -45,4 +46,5 @@ export default async function handler(
     let tenantName = String(req.query?.slug || '');
     await getTenants(tenantName);
   }
+  
 }

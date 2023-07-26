@@ -14,6 +14,7 @@ export type Product = {
 };
 
 export type Tenant = {
+    id:string,
     name: string,
     mainColor: string,
     instagram: string,

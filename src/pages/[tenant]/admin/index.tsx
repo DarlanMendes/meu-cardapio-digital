@@ -10,15 +10,20 @@ import CategoryAdminModal from "@/components/CategoryAdminModal";
 import ProductCardAdmin from "@/components/ProductCardAdmin/ProductCardAdmin";
 import { getSession, useSession } from "next-auth/react";
 
+type User={
+    name:string
+    image:string
+}
 
 interface Props {
     tenant: Tenant
     products: [Product]
     categories: [Category]
+    user:User
 }
 export default function AdminDashBoard(props: Props) {
     const router = useRouter()
-    const { tenant, products, categories } = props
+    const { tenant, products, categories, user} = props
     const [productEditing, setProductEditing] = useState<Product>({ id: '', name: ' ', category: categories[0]?.name, img: '', price: '', slug: tenant.slug, description: '' })
     const [categoryEditing, setCategoryEditing] = useState({ name: '', slug: tenant.slug, id: '' })
     const [showProductModel, setShowProductModel] = useState(false)
@@ -41,7 +46,7 @@ export default function AdminDashBoard(props: Props) {
         <>
             <ProductAdminModel product={productEditing!} setProduct={setProductEditing} showProductModel={showProductModel} setShowProductModel={setShowProductModel} categories={categories} />
             <CategoryAdminModal category={categoryEditing} isCategoryModalOpen={isCategoryModalOpen} setIsCategoryModalOpen={setIsCategoryModalOpen} setCategory={setCategoryEditing} tenant={tenant.slug} />
-            <HeaderTenant tenant={tenant} />
+            <HeaderTenant tenant={tenant} user={user}/>
             <div className={`px-4`}>
                 <div className="flex gap-4 items-center justify-center">
                     <h1 className="font-bold">Categorias:</h1>
@@ -94,7 +99,7 @@ export async function getServerSideProps(context:any) {
     const productsFound = await axios(`http://${host}/api/products/${tenant}`);
     const categoriesFound = await axios(`http://${host}/api/categories/${tenant}`);
     const session = await getSession(context);
-    
+    console.log(session?.user?.email, tenantFound.data.email)
     if (session?.user?.email !== tenantFound.data.email) {
         return {
             redirect: {
@@ -106,7 +111,8 @@ export async function getServerSideProps(context:any) {
         props: {
             tenant: tenantFound.data,
             products: productsFound.data,
-            categories: categoriesFound.data
+            categories: categoriesFound.data,
+            user:session?.user
         }
     };
 }

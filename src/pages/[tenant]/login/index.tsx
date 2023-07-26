@@ -4,7 +4,8 @@ import axios from "axios"
 
 import { getAuth, signInWithCustomToken } from 'firebase/auth'
 
-import {getSession, signIn, useSession} from "next-auth/react"
+import { getSession, signIn, useSession } from "next-auth/react"
+import Link from "next/link"
 import { useEffect } from "react"
 const auth = getAuth(app)
 
@@ -20,7 +21,10 @@ export default function Login(props: Props) {
                 <h1 className="font-bold text-white my-4 text-xl">
                     Sistema administrativo
                 </h1>
-                <img src={props.tenant.logo} className="rounded-full h-[50vw] w-[50vw] object-cover" />
+                <Link href={`/${props.tenant.slug}`}>
+                    <img src={props.tenant.logo} className="rounded-full h-[50vw] w-[50vw] object-cover" />
+                </Link>
+
                 <button
                     className="py-3 bg-slate-800 text-white mt-4 mb-1 w-10/12 rounded-lg font-bold"
                     onClick={() => signIn('google')}
@@ -38,37 +42,37 @@ export async function getServerSideProps(context: any) {
     const { host } = context.req.headers
     const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
     const session = await getSession(context)
-    console.log(session)
+
     await syncFirebaseAuth(session)
-    if(session)
-    if(session){
-        if(session.user?.email===tenantFound.data.email){
-            return{
-                redirect:{
-                    destination:`/${tenant}/admin`
+
+    if (session) {
+        if (session.user?.email === tenantFound.data.email) {
+            return {
+                redirect: {
+                    destination: `/${tenant}/admin`
                 }
             }
         }
     }
-    return{
-        props:{
-            tenant:tenantFound.data
+    return {
+        props: {
+            tenant: tenantFound.data
         }
     }
-    
+
 
 }
 //Necessário criar um customToken para conseguir permissao de gravação usando adapter
-async function syncFirebaseAuth(session:any) {
+async function syncFirebaseAuth(session: any) {
     if (session && session.firebaseToken) {
-      try {
-        await signInWithCustomToken(auth, session.firebaseToken)
-      } catch (error) {
-        console.error('Error signing in with custom token:', error)
-      }
+        try {
+            await signInWithCustomToken(auth, session.firebaseToken)
+        } catch (error) {
+            console.error('Error signing in with custom token:', error)
+        }
     } else {
-      auth.signOut()
+        auth.signOut()
     }
-  }
+}
 
-        
+

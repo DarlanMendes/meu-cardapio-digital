@@ -37,15 +37,12 @@ interface Props{
 }
 export default function TenantPage(props:Props) {
 
-   // const [categories, setCategories] = useState([{ id: 1, category: "Hamburguer" }, { id: 2, category: "Pizza" }, { id: 3, category: "Suco" }])
+   
     const[categories, setCategories] = useState(props.categories)
-    // const [products, setProducts] = useState([{ id: 1, name: "Hamburgão Top", category_id: 1, tenant_id: 1, price:"14,98", 
-    //                                             img:"https://cdn.casaeculinaria.com/wp-content/uploads/2023/04/05163949/Hamburguer-artesanal-1024x576.webp",
-    //                                             description:"Melhor hamburguer da cidade" }])
-    //const [tenant, setTenant] = useState({ id: 'xl', name: "Duz Lanches", mainColor: 'red', instagram:"https://www.instagram.com/", facebook:"https://www.facebook.com/", whatsapp:"https://www.whatsapp.com/" })
+    
      const[products, setProducts] = useState(props.products)
     const[tenant, setTenant] = useState(props.tenant)
-    const [categorySelected, setCategorySelected] = useState("Hamburguer")
+    const [categorySelected, setCategorySelected] = useState(props.categories[0].name)
     console.log(props.products)
     return (
         <>
@@ -80,7 +77,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
     const { tenant } = context.query
     const { host } = context.req.headers
+    
     const tenantFound = await axios(`http://${host}/api/tenants/${tenant}`)
+    
     const productsFound = await axios(`http://${host}/api/products/${tenant}`)
     const categoriesFound = await axios(`http://${host}/api/categories/${tenant}`)
     
