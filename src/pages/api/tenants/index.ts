@@ -29,7 +29,7 @@ export default async function handler(
       tenants.push({...doc.data(), id:doc.id})
     } 
       );
-    res.status(200).json(tenants!)
+    res.status(200).json(tenants)
   }
   if(req.method === 'GET'){
      await  getTenants(db)
