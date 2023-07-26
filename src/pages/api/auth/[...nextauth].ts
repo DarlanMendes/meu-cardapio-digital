@@ -15,13 +15,13 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXT_PUBLIC_JWT_SECRET as string,
 
-  adapter: FirestoreAdapter({
-    credential: cert({
-      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-      clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
-      privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY,
-    }),
-  }) as Adapter,
+  // adapter: FirestoreAdapter({
+  //   credential: cert({
+  //     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  //     clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
+  //     privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY,
+  //   }),
+  // }) as Adapter,
   callbacks: {
     async session({ session, token }) {  
       
