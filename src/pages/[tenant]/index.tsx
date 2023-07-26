@@ -42,7 +42,7 @@ export default function TenantPage(props:Props) {
     
      const[products, setProducts] = useState(props.products)
     const[tenant, setTenant] = useState(props.tenant)
-    const [categorySelected, setCategorySelected] = useState(props.categories[0].name)
+    const [categorySelected, setCategorySelected] = useState(props.categories[0]?.name)
     console.log(props.products)
     return (
         <>

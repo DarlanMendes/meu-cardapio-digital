@@ -122,7 +122,7 @@ export default function TenantAdminModal(props: Props) {
                 <div className=" flex justify-around w-full">
                     <button onClick={() => {
                         props.setShowTenantModel(false);
-                        props.setTenant({id:"",name:"",mainColor:"",instagram:"",facebook:"",whatsapp:"",email:"",slug:"",banner:"",logo:""});
+                     
                         handleCacheInputFile()
                     }}
                         className="bg-red-500 text-white py-1 px-3 rounded-lg mt-4"

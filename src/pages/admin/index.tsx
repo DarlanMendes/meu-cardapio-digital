@@ -3,7 +3,7 @@ import { Tenant } from "@/types/types";
 import axios from "axios";
 import { getSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {RiLogoutBoxRLine} from "react-icons/ri"
 type User = {
     name: string
@@ -17,7 +17,18 @@ interface Props {
 export default function Admin(props: Props) {
     const [showTenantModel, setShowTenantModel] = useState(false)
     const [tenantForEdit, setTenantForEdit] = useState({ id: "", name: "", mainColor: "", instagram: "", facebook: "", whatsapp: "", email: "", slug: "", banner: "", logo: "" })
+   // const [tenant, setTenant]= useState<Tenant[]|[]>([])
     const router = useRouter()
+    // useEffect(()=>{
+    //     getTenants()
+    // })
+    // async function getTenants (){
+    //     const{host} = window.location
+    //     //const tenantsFound = await axios(`http://${host}/api/tenants/`)
+    //    // setTenant(tenantsFound.data)
+        
+        
+    // }
     async function handleLogOut() {
         try {
             await signOut()

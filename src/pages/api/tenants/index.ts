@@ -21,21 +21,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  if(req.method === 'GET'){
-     
-    const tenantsCol = collection(db, 'tenant');
-    const tenantSnapshot = await getDocs(tenantsCol);
-    const tenants:any= []
-    try{
-      const tenantList = tenantSnapshot.docs.map(doc =>{
-        tenants.push({...doc.data(), id:doc.id})
-      } 
-        );
-      res.status(200).json(tenants)
-    }catch(e){
-      res.send({msg:`Erro ${e}`})
+  if (req.method === 'GET') {
+    try {
+      const tenantsCol = collection(db, 'tenant');
+      const tenantSnapshot = await getDocs(tenantsCol);
+      const tenants: any[] = [];
+  
+      tenantSnapshot.forEach((doc) => {
+        tenants.push({ id: doc.id, data: doc.data() });
+      });
+  
+      return res.json(tenants as any); // Adiciona o 'return' aqui
+    } catch (error) {
+      console.error('Erro ao obter os dados dos tenants:', error);
+      return res.status(500).json({ msg: 'Erro ao obter os tenants' });
     }
   }
+  
   if(req.method === 'POST'){
     const TenantCollectionRef = collection(db, 'tenant');
     let { name, mainColor, facebook, instagram,whatsapp,logo, banner, slug, email} = req.body;

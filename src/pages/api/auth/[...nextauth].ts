@@ -2,9 +2,9 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google"
 import * as admin from 'firebase-admin'
-// import { FirestoreAdapter } from "@auth/firebase-adapter";
-// import { cert } from "firebase-admin/app";
-// import type { Adapter } from "next-auth/adapters";
+import { FirestoreAdapter } from "@auth/firebase-adapter";
+import { cert } from "firebase-admin/app";
+import type { Adapter } from "next-auth/adapters";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,20 +15,21 @@ export const authOptions: NextAuthOptions = {
   ],
   secret: process.env.NEXT_PUBLIC_JWT_SECRET as string,
 
-  // adapter: FirestoreAdapter({
-  //   credential: cert({
-  //     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  //     clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
-  //     privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY,
-  //   }),
-  // }) as Adapter,
+  adapter: FirestoreAdapter({
+    credential: cert({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
+      privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY,
+    }),
+  }) as Adapter,
   callbacks: {
-    async session({ session, token }) {  
+    async session({session, token}) {  
       
       if (token ) {
         const firebaseToken = await admin.auth().createCustomToken(`${token!.jti}`)
-      //@ts-ignore
+        //@ts-ignore
         session.firebaseToken = firebaseToken
+       
       }
       return session
     },
@@ -40,6 +41,7 @@ export default NextAuth(authOptions)
 
 
 if (!admin.apps.length) {
+  console.log(admin.apps)
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
